@@ -1,0 +1,454 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+/* line 18, ../sass/screen.scss */
+body {
+  background-image: url("../images/hi_tech_texture-wallpaper-1920x1200.jpg");
+  background-attachment: fixed;
+}
+
+/* line 24, ../sass/screen.scss */
+header h1, header p {
+  color: #ccc;
+}
+
+/* line 30, ../sass/screen.scss */
+.row {
+  background-color: RGBA(247, 247, 247, 1);
+}
+
+/* line 34, ../sass/screen.scss */
+h1, h2, h3, h4, h6, h6 {
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+
+/* REVIEWS */
+/* line 41, ../sass/screen.scss */
+article {
+  padding: 0 24px;
+  margin-bottom: 80px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #cccccc;
+}
+/* line 47, ../sass/screen.scss */
+article h2 {
+  text-transform: uppercase;
+  font-size: 32px;
+  margin-bottom: 3.2px;
+  border-bottom: 1px solid #aaaaaa;
+}
+/* line 53, ../sass/screen.scss */
+article img {
+  margin: 0 auto 16px;
+  width: 66%;
+  border: 1px solid #898989;
+}
+/* line 58, ../sass/screen.scss */
+article strong {
+  font-weight: 500;
+  color: #222;
+  font-size: 17.6px;
+}
+
+/* line 65, ../sass/screen.scss */
+p {
+  font-family: "rooney-web", Georgia, serif;
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 19.2px;
+}
+
+/* line 76, ../sass/screen.scss */
+a.readMore {
+  background-color: #2795b6;
+  color: #222;
+  display: block;
+  padding: 7px 10px;
+  margin-bottom: 16px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-size: 25.6px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+/* line 86, ../sass/screen.scss */
+a.readMore:hover {
+  background-color: #333;
+  color: #ddd;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+/* line 93, ../sass/screen.scss */
+a.commentsLink {
+  background-color: #333;
+  color: #ddd;
+  font-family: "rooney-web", Georgia, serif;
+  font-size: 16px;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: 16px;
+}
+/* line 101, ../sass/screen.scss */
+a.commentsLink:hover {
+  background-color: #2795b6;
+  color: #222;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+/* line 108, ../sass/screen.scss */
+ul, li {
+  margin: 0;
+  list-style-type: none;
+}
+
+/* MENU */
+/* line 115, ../sass/screen.scss */
+nav {
+  border-bottom: 1px solid #cccccc;
+  background-color: #141414 !important;
+}
+/* line 118, ../sass/screen.scss */
+nav ul.toplevel {
+  margin-bottom: 0px;
+  z-index: 998;
+}
+/* line 122, ../sass/screen.scss */
+nav ul.toplevel li {
+  float: left;
+  padding: 12px 17px 10px;
+  margin-left: 30px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-size: 25.6px;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #4494d2;
+  position: relative;
+  display: block !important;
+  position: relative;
+  overflow: visible;
+  text-align: center;
+  z-index: 998;
+}
+/* line 138, ../sass/screen.scss */
+nav ul.toplevel li:hover ul {
+  visibility: visible;
+}
+/* line 142, ../sass/screen.scss */
+nav ul.toplevel li a {
+  font-size: 25.6px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: #4494d2;
+  display: block;
+  text-align: center;
+}
+/* line 151, ../sass/screen.scss */
+nav ul.toplevel li a:hover {
+  color: #ddd;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+/* line 159, ../sass/screen.scss */
+nav ul.toplevel li ul {
+  visibility: hidden;
+  position: absolute;
+  top: 63px;
+  left: 3px;
+  z-index: 999;
+  background-color: RGBA(14, 14, 14, 0.85);
+  border-radius: 0px 0px 10px 10px;
+  margin: 0;
+  padding: 0;
+}
+/* line 169, ../sass/screen.scss */
+nav ul.toplevel li ul li {
+  float: none;
+  margin: 0;
+  padding: 5px 20px;
+  display: block;
+  margin-top: 0px;
+  border-radius: 0px 0px 10px 10px;
+}
+/* line 177, ../sass/screen.scss */
+nav ul.toplevel li ul li a {
+  font-size: 19.2px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: block;
+  text-align: center;
+  text-transform: capitalize !important;
+  font-weight: 500;
+}
+/* line 188, ../sass/screen.scss */
+nav ul.toplevel li ul li:hover {
+  background-color: RGBA(10, 10, 10, 1);
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -ms-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+/* line 194, ../sass/screen.scss */
+nav ul.toplevel li ul li:hover a {
+  color: #ccc;
+  -webkit-transition: all 0.6s ease-in-out;
+  -moz-transition: all 0.6s ease-in-out;
+  -ms-transition: all 0.6s ease-in-out;
+  -o-transition: all 0.6s ease-in-out;
+  transition: all 0.6s ease-in-out;
+}
+
+/* FORMS */
+/* line 212, ../sass/screen.scss */
+form label {
+  margin-bottom: 32px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-size: 20.8px;
+}
+/* line 217, ../sass/screen.scss */
+form input {
+  font-family: "rooney-web", Georgia, serif !important;
+}
+/* line 219, ../sass/screen.scss */
+form input:focus {
+  outline: none;
+}
+/* line 223, ../sass/screen.scss */
+form input[type=submit] {
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif !important;
+  font-size: 20.8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 0px;
+  padding: 5px 10px;
+  background-color: #2795b6;
+  color: #222;
+  margin: 0 auto;
+  display: block;
+}
+/* line 236, ../sass/screen.scss */
+form textarea {
+  height: 400px;
+}
+
+/* line 244, ../sass/screen.scss */
+#authenticationPanel {
+  background-color: RGBA(0, 0, 0, 0.5);
+  margin-bottom: 40px;
+}
+/* line 247, ../sass/screen.scss */
+#authenticationPanel .row {
+  background: transparent;
+}
+/* line 250, ../sass/screen.scss */
+#authenticationPanel ul {
+  margin-bottom: 0;
+}
+/* line 252, ../sass/screen.scss */
+#authenticationPanel ul li {
+  float: left;
+  margin-left: 30px;
+}
+/* line 255, ../sass/screen.scss */
+#authenticationPanel ul li strong {
+  display: block;
+  font-size: 14.4px;
+  padding-top: 17px;
+  color: #ddd;
+  font-family: 'proxima-nova';
+  font-weight: 400;
+}
+/* line 263, ../sass/screen.scss */
+#authenticationPanel ul li a {
+  font-family: 'proxima-nova';
+  padding-top: 15px;
+  display: block;
+  font-size: 16px;
+  text-transform: capitalize;
+}
+/* line 271, ../sass/screen.scss */
+#authenticationPanel ul li form input {
+  font-family: 'proxima-nova';
+  float: left;
+  width: 140px;
+  height: 30px;
+  margin-top: 10px;
+  background-color: #eee;
+}
+/* line 278, ../sass/screen.scss */
+#authenticationPanel ul li form input:focus {
+  outline: none;
+}
+/* line 282, ../sass/screen.scss */
+#authenticationPanel ul li form input[type=submit] {
+  font-family: "proxima-nova" !important;
+  float: left;
+  width: 80px;
+  background: transparent;
+  text-transform: capitalize;
+  color: #ccc;
+  border: none;
+  font-size: 16px;
+}
+
+/* line 299, ../sass/screen.scss */
+#wrapper {
+  margin-bottom: 40px;
+}
+/* line 301, ../sass/screen.scss */
+#wrapper .row {
+  background-color: transparent;
+}
+
+/* line 306, ../sass/screen.scss */
+.success {
+  color: #5ce120;
+}
+
+/* line 310, ../sass/screen.scss */
+.error {
+  color: #b22222;
+}
+
+/* line 314, ../sass/screen.scss */
+.hidden {
+  display: none !important;
+}
+
+/* line 318, ../sass/screen.scss */
+#featuredContentOne {
+  margin-top: -1px;
+  margin-bottom: 40px;
+}
+
+/* line 323, ../sass/screen.scss */
+#captionOne {
+  position: absolute;
+  padding: 48px;
+  width: 280px;
+  right: 0px;
+  top: 0;
+  background-color: RGBA(0, 0, 0, 0.8);
+}
+/* line 324, ../sass/screen.scss */
+#captionOne h3 {
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-size: 25.888px;
+  color: #ccc;
+  text-transform: uppercase !important;
+}
+/* line 331, ../sass/screen.scss */
+#captionOne p {
+  font-family: 'proxima-nova';
+  font-size: 12.8px;
+  color: #ccc;
+  margin-bottom: 40px !important;
+}
+/* line 345, ../sass/screen.scss */
+#captionOne a {
+  font-size: 20.8px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  padding: 5px 10px;
+  background-color: #2283a0;
+  color: #eee;
+}
+
+/* line 354, ../sass/screen.scss */
+#captionTwo {
+  position: absolute;
+  padding: 48px;
+  width: 280px;
+  right: 0px;
+  top: 0;
+  background-color: RGBA(0, 0, 0, 0.8);
+}
+/* line 355, ../sass/screen.scss */
+#captionTwo h3 {
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-size: 25.888px;
+  color: #ccc;
+  text-transform: uppercase !important;
+}
+/* line 362, ../sass/screen.scss */
+#captionTwo p {
+  font-family: 'proxima-nova';
+  font-size: 12.8px;
+  color: #ccc;
+  margin-bottom: 40px !important;
+}
+/* line 376, ../sass/screen.scss */
+#captionTwo a {
+  font-size: 20.8px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  padding: 5px 10px;
+  background-color: #2283a0;
+  color: #eee;
+}
+
+/* line 385, ../sass/screen.scss */
+#captionThree {
+  position: absolute;
+  padding: 48px;
+  width: 280px;
+  right: 0px;
+  top: 0;
+  background-color: RGBA(0, 0, 0, 0.8);
+}
+/* line 386, ../sass/screen.scss */
+#captionThree h3 {
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  font-size: 25.888px;
+  color: #ccc;
+  text-transform: uppercase !important;
+}
+/* line 393, ../sass/screen.scss */
+#captionThree p {
+  font-family: 'proxima-nova';
+  font-size: 12.8px;
+  color: #ccc;
+  margin-bottom: 40px !important;
+}
+/* line 407, ../sass/screen.scss */
+#captionThree a {
+  font-size: 20.8px;
+  font-family: "proxima-nova-condensed", Helvetica, Arial, sans-serif;
+  padding: 5px 10px;
+  background-color: #2283a0;
+  color: #eee;
+}
+
+/* line 416, ../sass/screen.scss */
+.grap {
+  max-width: 1180px;
+  border: 1px solid black;
+  margin: 0 auto;
+  border-radius: 3px 3px 0px 0px;
+}
+
+/*
+SIDEBAR
+*/
+/* line 429, ../sass/screen.scss */
+aside {
+  border-left: 1px solid #cccccc;
+}
+/* line 433, ../sass/screen.scss */
+aside ul, aside li {
+  list-style-type: disc;
+  list-style-position: inside;
+  font-family: 'proxima-nova';
+}

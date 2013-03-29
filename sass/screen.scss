@@ -1,0 +1,447 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+$bodyFont: 'rooney-web', Georgia, serif;
+$headlineFont: 'proxima-nova-condensed', Helvetica, Arial, sans-serif;
+$baseFontSize: 16px;
+
+@mixin transition($transition-property, $transition-time, $method) {
+    -webkit-transition: $transition-property $transition-time $method;
+    -moz-transition: $transition-property $transition-time $method;
+    -ms-transition: $transition-property $transition-time $method;
+    -o-transition: $transition-property $transition-time $method;
+    transition: $transition-property $transition-time $method;
+}
+
+body {
+    background-image: url("../images/hi_tech_texture-wallpaper-1920x1200.jpg");
+    background-attachment: fixed;
+}
+
+header {
+    h1, p {
+        color: #ccc;
+
+    }
+}
+
+.row {
+    background-color: RGBA(247, 247, 247, 1);
+}
+
+h1, h2, h3, h4, h6, h6 {
+    font-family: $headlineFont;
+    font-weight: 700;
+}
+
+/* REVIEWS */
+
+article {
+    padding: 0 1.5*$baseFontSize;
+    margin-bottom: 80px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #ccc;
+
+    h2 {
+        text-transform: uppercase;
+        font-size: 2 * $baseFontSize;
+        margin-bottom: 0.2*$baseFontSize;
+        border-bottom: 1px solid #aaa;
+    }
+    img {
+        margin: 0 auto $baseFontSize;
+        width: 66%;
+        border: 1px solid #898989;
+    }
+    strong {
+        font-weight: 500;
+        color: #222;
+        font-size: 1.1 * $baseFontSize;
+    }
+}
+
+p {
+    font-family: $bodyFont;
+    font-size: $baseFontSize;
+    color: #555;
+    margin-bottom: $baseFontSize * 1.2;
+}
+
+a {
+
+}
+
+a.readMore {
+    background-color: #2795b6;
+    color: #222;
+    display: block;
+    padding: 7px 10px;
+    margin-bottom: $baseFontSize;
+    font-family: $headlineFont;
+    font-size: 1.6*$baseFontSize;
+    font-weight: 700;
+    text-transform: uppercase;
+    &:hover {
+        background-color: #333;
+        color: #ddd;
+        @include transition(all, 0.3s, ease-in-out);
+    }
+}
+
+a.commentsLink {
+    background-color: #333;
+    color: #ddd;
+    font-family: $bodyFont;
+    font-size: $baseFontSize;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: $baseFontSize;
+    &:hover {
+        background-color: #2795b6;
+        color: #222;
+        @include transition(all, 0.3s, ease-in-out);
+    }
+}
+
+ ul, li {
+     margin: 0;
+     list-style-type: none;
+ }
+
+/* MENU */
+
+nav {
+    border-bottom: 1px solid #ccc;
+    background-color: #141414 !important;
+    ul.toplevel {
+        margin-bottom: 0px;
+        z-index: 998;
+
+        li {
+            float: left;
+            padding: 12px 17px 10px;
+            margin-left: 30px;
+            font-family: $headlineFont;
+            font-size: 1.6 * $baseFontSize;
+
+            text-transform: uppercase;
+            font-weight: 400;
+            color: #4494d2;
+            position: relative;
+            display: block !important;
+            position: relative;
+            overflow: visible;
+            text-align: center;
+            z-index: 998;
+            &:hover ul {
+                visibility: visible;
+            }
+
+            a {
+                font-size: 1.6 * $baseFontSize;
+                font-family: $headlineFont;
+                text-transform: uppercase;
+                font-weight: 400;
+                color: #4494d2;
+                display: block;
+                text-align: center;
+
+                &:hover {
+                    color: #ddd;
+                    @include transition(all, 0.3s, ease-in-out);
+                }
+
+
+            }
+
+            ul {
+                visibility: hidden;
+                position: absolute;
+                top: 63px;
+                left: 3px;
+                z-index: 999;
+                background-color: RGBA(14,14,14,0.85);
+                border-radius: 0px 0px 10px 10px;
+                margin: 0;
+                padding: 0;
+                li {
+                   float: none;
+                    margin: 0;
+                    padding: 5px 20px;
+                    display: block;
+                    margin-top: 0px;
+                    border-radius: 0px 0px 10px 10px;
+
+                    a {
+                        font-size: 1.2 * $baseFontSize;
+                        font-family: $headlineFont;
+                        margin: 0;
+                        padding: 0;
+                        display: block;
+                        text-align: center;
+                        text-transform: capitalize !important;
+                        font-weight: 500;
+                    }
+
+                    &:hover {
+                        background-color: RGBA(10,10,10,1);
+                        @include transition(all, 0.6s, ease-in-out);
+
+                    }
+
+                    &:hover a {
+                        color: #ccc;
+                        @include transition(all, 0.6s, ease-in-out);
+
+                    }
+
+                }
+
+
+            }
+        }
+
+    }
+}
+
+/* FORMS */
+
+form {
+    label {
+        margin-bottom: 2*$baseFontSize;
+        font-family: $headlineFont;
+        font-size: 1.3*$baseFontSize;
+    }
+    input {
+        font-family: $bodyFont !important;
+        &:focus {
+            outline: none;
+        }
+    }
+    input[type=submit] {
+        font-family: $headlineFont !important;
+        font-size: 1.3*$baseFontSize;
+        font-weight: 700;
+        text-transform: uppercase;
+        border: 0px;
+        padding: 5px 10px;
+        background-color: #2795b6;
+        color: #222;
+        margin: 0 auto;
+        display: block;
+    }
+
+    textarea {
+        height: 400px;
+    }
+
+}
+
+// ===========
+
+#authenticationPanel {
+    background-color: RGBA(0, 0, 0, 0.5);
+    margin-bottom: 40px;
+    .row {
+        background: transparent;
+    }
+    ul {
+        margin-bottom: 0;
+        li {
+            float: left;
+            margin-left: 30px;
+            strong {
+                display: block;
+                font-size: 0.9 * $baseFontSize;
+                padding-top: 17px;
+                color: #ddd;
+                font-family: 'proxima-nova';
+                font-weight: 400;
+            }
+            a {
+                font-family: 'proxima-nova';
+                padding-top: 15px;
+                display: block;
+                font-size: $baseFontSize;
+                text-transform: capitalize;
+            }
+            form {
+                input {
+                    font-family: 'proxima-nova';
+                    float: left;
+                    width: 140px;
+                    height: 30px;
+                    margin-top: 10px;
+                    background-color: #eee;
+                    &:focus {
+                        outline: none;
+                    }
+                }
+                input[type=submit] {
+                    font-family: 'proxima-nova' !important;
+                    float: left;
+                    width: 80px;
+                    background: transparent;
+                    text-transform: capitalize;
+                    color: #ccc;
+                    border: none;
+                    font-size: $baseFontSize;
+
+                }
+            }
+        }
+    }
+
+}
+
+#wrapper {
+    margin-bottom: 40px;
+    .row {
+        background-color: transparent;
+    }
+}
+
+.success {
+    color: #5ce120;
+}
+
+.error {
+    color: #b22222;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#featuredContentOne {
+    margin-top: -1px;
+    margin-bottom: 40px;
+}
+
+#captionOne {
+    h3 {
+        font-family: $headlineFont;
+        font-size: 1.618*$baseFontSize;
+        color: #ccc;
+        text-transform: uppercase !important;
+
+    }
+    p {
+        font-family: 'proxima-nova';
+        font-size: 0.8*$baseFontSize;
+        color: #ccc;
+        margin-bottom: 40px !important;
+    }
+    position: absolute;
+    padding: 3*$baseFontSize;
+
+    width: 280px;
+    right: 0px;
+    top: 0;
+    background-color: RGBA(0, 0, 0, 0.8);
+
+    a {
+        font-size: 1.3 * $baseFontSize;
+        font-family: $headlineFont;
+        padding: 5px 10px;
+        background-color: #2283a0;
+        color: #eee;
+    }
+}
+
+#captionTwo {
+    h3 {
+        font-family: $headlineFont;
+        font-size: 1.618*$baseFontSize;
+        color: #ccc;
+        text-transform: uppercase !important;
+
+    }
+    p {
+        font-family: 'proxima-nova';
+        font-size: 0.8*$baseFontSize;
+        color: #ccc;
+        margin-bottom: 40px !important;
+    }
+    position: absolute;
+    padding: 3*$baseFontSize;
+
+    width: 280px;
+    right: 0px;
+    top: 0;
+    background-color: RGBA(0, 0, 0, 0.8);
+
+    a {
+        font-size: 1.3 * $baseFontSize;
+        font-family: $headlineFont;
+        padding: 5px 10px;
+        background-color: #2283a0;
+        color: #eee;
+    }
+}
+
+#captionThree {
+    h3 {
+        font-family: $headlineFont;
+        font-size: 1.618*$baseFontSize;
+        color: #ccc;
+        text-transform: uppercase !important;
+
+    }
+    p {
+        font-family: 'proxima-nova';
+        font-size: 0.8*$baseFontSize;
+        color: #ccc;
+        margin-bottom: 40px !important;
+    }
+    position: absolute;
+    padding: 3*$baseFontSize;
+
+    width: 280px;
+    right: 0px;
+    top: 0;
+    background-color: RGBA(0, 0, 0, 0.8);
+
+    a {
+        font-size: 1.3 * $baseFontSize;
+        font-family: $headlineFont;
+        padding: 5px 10px;
+        background-color: #2283a0;
+        color: #eee;
+    }
+}
+
+.grap {
+    max-width: 1180px;
+    border: 1px solid #000;
+    margin: 0 auto;
+    border-radius: 3px 3px 0px 0px;
+}
+
+
+
+/*
+SIDEBAR
+*/
+
+aside {
+
+    border-left: 1px solid #ccc;
+
+    ul,li {
+        list-style-type: disc;
+        list-style-position: inside;
+        font-family: 'proxima-nova';
+    }
+}
+
+
+
+
+
+
+
+
+
