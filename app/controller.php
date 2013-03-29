@@ -20,26 +20,39 @@ class Controller
 
 		$this->user = $this->session->user;
 
-		/* Process Query string */
-		$urlParams = FALSE;
-		if (strlen($_GET['query']) > 0) {
-			$urlParams = explode("/", $_GET['query']);
-		}
+		$page = $this->proccessPageString();    // Get page from URL
+		$urlParams = $this->proccessQueryString();  // Get the url parameters from URL
 
-		$page = $_GET['page'];
-
-		/* Handle page load */
+		// Handle page load
 		$endpoint = $this->router->lookup($page);
-
 		if ($endpoint == FALSE) {
 			$this->redirectTo("/404.html");
 		} else {
-			$this->$endpoint($urlParams); /* endpoint will be the function returned by our router!! */
+			$this->$endpoint($urlParams); /* endpoint will be the function returned by router */
 		}
 	}
 
 
 	/* GENERAL USAGE METHODS */
+
+	private function proccessPageString()
+	{
+		$page = FALSE;
+		if (isset($_GET['page']) && is_string($_GET['page'])) {
+			$page = $_GET['page'];
+		}
+		return $page;
+	}
+
+	private function proccessQueryString()
+	{
+		$urlParams = FALSE;
+		if (strlen($_GET['query']) > 0) {
+			$urlParams = explode("/", $_GET['query']);
+		}
+		return $urlParams;
+	}
+
 
 	private function loadPage($view, $data = NULL)
 	{
