@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 
 class Controller
 {
-	public $user = '';
+	public $user;
 
 	function __construct()
 	{
@@ -32,7 +32,7 @@ class Controller
 		$endpoint = $this->router->lookup($page);
 
 		if ($endpoint == FALSE) {
-			header("Location: 404.html");
+			$this->redirectTo("/404.html");
 		} else {
 			$this->$endpoint($urlParams); /* endpoint will be the function returned by our router!! */
 		}
