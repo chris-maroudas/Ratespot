@@ -21,7 +21,7 @@ class Model
 		}
 
 		/* Checking if our tables exist. If not, we create them. More self tests inc */
-		$tables = array('users', 'reviews');
+		$tables = array('users', 'reviews', 'articles');
 		// Move tables to a CONSTANT
 		$this->checkIfTablesExist($tables);
 	}
@@ -30,11 +30,8 @@ class Model
 	{
 		foreach ($tables as $value) {
 			$query = "SELECT * FROM $value";
-			try {
-				$STH = $this->conn->prepare($query); // Self tests to see if every table exists
-				$STH->execute();
-			} catch (PDOException $e) {
-				echo 'Database Error: ' . $e->getMessage();
+			$result = $this->prepareAndExecuteQuery($query);
+			if ($result == FALSE) {
 				$this->createTable($value);
 			}
 		}
@@ -48,33 +45,55 @@ class Model
 	}
 
 
-	/* Database abstraction for inserting data into our database */
-	// Using prepared statements, so no need for mysql escaping
 
-	public function insert($table, $arr)
+	private function prepareAndExecuteQuery ($query, $param = NULL)
 	{
-		foreach (array_keys($arr) as $value) {
-			$pdo_placeholders[] = ":" . $value; // Creating an array of our keys, concatenated with :
-		}
-
-		$query = "INSERT INTO " . $table . " (";
-		$query .= implode(",", array_keys($arr));
-		$query .= ") VALUES (";
-		$query .= implode(",", $pdo_placeholders);
-		$query .= ")";
-
 		try {
 			$STH = $this->conn->prepare($query);
-			$STH->execute($arr); /* executing it with our array */
+			$result = $STH->execute($param);
 		} catch (PDOException $e) {
 			echo 'Error: ' . $e->getMessage();
 		}
 
-
-		if (!empty($STH)) { // Not sure if correct error checking
-			return TRUE;
-		} else {
+		if ($result == FALSE) {
 			return FALSE;
+		} elseif ($result == TRUE) {
+			return $STH;
+		}
+
+	}
+
+	private function createPdoPlaceholders ($param)
+	{
+		$keys = array_keys($param);
+		foreach ($keys as $value) {
+			$PdoPlaceholders[] = ':' . $value;
+		}
+		return $PdoPlaceholders;
+	}
+
+
+
+
+	/* Database abstraction for inserting data into our database */
+	// Using prepared statements, so no need for mysql escaping
+
+	public function insert($table, $param)
+	{
+		$PdoPlaceholders = $this->createPdoPlaceholders($param);
+
+		$query = "INSERT INTO " . $table . " (";
+		$query .= implode(",", array_keys($param));
+		$query .= ") VALUES (";
+		$query .= implode(",", $PdoPlaceholders);
+		$query .= ")";
+
+		$PdoResultObject = $this->prepareAndExecuteQuery($query, $param);
+		// Returning the results
+		if ($PdoResultObject == FALSE) {
+			return FALSE;
+		} else {
+			return TRUE;
 		}
 
 	}
@@ -86,14 +105,12 @@ class Model
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
-			foreach ($keys as $value) {
-				$pdo_placeholders[] = ':' . $value;
-			}
+			$PdoPlaceholders = $this->createPdoPlaceholders($param);
 
 			if (count($param) == 1) { // If we got 1 WHERE statement
-				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $pdo_placeholders[0];
+				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $PdoPlaceholders[0];
 			} elseif (count($param) == 2) { // If we got 2 WHERE statements
-				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $pdo_placeholders[0] . " AND " . $keys[1] . " = " . $pdo_placeholders[1];
+				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $PdoPlaceholders[0] . " AND " . $keys[1] . " = " . $PdoPlaceholders[1];
 			}
 			// To be expanded with 3 and 4 WHERE/AND statements. There will be enough
 			// Also, consided array_key_exists('order_by'), to change the order of results
@@ -123,21 +140,15 @@ class Model
 			}
 		}
 
-		try {
-			$STH = $this->conn->prepare($query);
-			$STH->execute($param);
-		} catch (PDOException $e) {
-			echo 'Error: ' . $e->getMessage();
-		}
-
-		$data = $STH->fetchAll();
-		// Returning the results
-		if (!empty($data) && is_array($data)) {
-			return $data;
-		} else {
+		$PdoResultObject = $this->prepareAndExecuteQuery($query, $param);
+		if ($PdoResultObject == FALSE) {
 			return FALSE;
+		} else {
+			$data = $PdoResultObject->fetchAll();
+			return $data;
 		}
 	}
+
 
 
 	// method for abstracting update statements.
@@ -148,29 +159,20 @@ class Model
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
-			foreach ($keys as $value) {
-				$pdo_placeholders[] = ':' . $value;
-			}
+			$PdoPlaceholders = $this->createPdoPlaceholders($param);
 
 			if (count($param) == 2) { // If we got 1 WHERE statement
-				$query = "UPDATE " . $table . " SET " . $keys[0] . " = " . $pdo_placeholders[0] . " WHERE " . $keys[1] . " = " . $pdo_placeholders[1];
+				$query = "UPDATE " . $table . " SET " . $keys[0] . " = " . $PdoPlaceholders[0] . " WHERE " . $keys[1] . " = " . $PdoPlaceholders[1];
 			} elseif (count($param) == 3) { // If we got 2 WHERE statements
-				$query = "UPDATE " . $table . " SET " . $keys[0] . " = " . $pdo_placeholders[0] . " WHERE " . $keys[1] . " = " . $pdo_placeholders[1] . " AND " . $keys[2] . " = " . $pdo_placeholders[2];
+				$query = "UPDATE " . $table . " SET " . $keys[0] . " = " . $PdoPlaceholders[0] . " WHERE " . $keys[1] . " = " . $PdoPlaceholders[1] . " AND " . $keys[2] . " = " . $PdoPlaceholders[2];
 			}
 		}
 
-		try {
-			$STH = $this->conn->prepare($query);
-			$STH->execute($param);
-		} catch (PDOException $e) {
-			echo 'Error: ' . $e->getMessage();
-		}
-
-		// Returning the results
-		if (!empty($STH)) {
-			return TRUE;
-		} else {
+		$PdoResultObject = $this->prepareAndExecuteQuery($query, $param);
+		if ($PdoResultObject == FALSE) {
 			return FALSE;
+		} else {
+			return TRUE;
 		}
 	}
 
@@ -183,30 +185,21 @@ class Model
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
-			foreach ($keys as $value) {
-				$pdo_placeholders[] = ':' . $value;
-			}
+			$PdoPlaceholders = $this->createPdoPlaceholders($param);
 
 			if (count($param) == 1) { // If we got 1 WHERE statement
-				$query = "DELETE FROM " . $table . " WHERE " . $keys[0] . " = " . $pdo_placeholders[0];
+				$query = "DELETE FROM " . $table . " WHERE " . $keys[0] . " = " . $PdoPlaceholders[0];
 			} elseif (count($param) == 2) { // If we got 2 WHERE statements
-				$query = "DELETE FROM " . $table . " WHERE " . $keys[0] . " = " . $pdo_placeholders[0] . " AND " . $keys[1] . " = " . $pdo_placeholders[1];
+				$query = "DELETE FROM " . $table . " WHERE " . $keys[0] . " = " . $PdoPlaceholders[0] . " AND " . $keys[1] . " = " . $PdoPlaceholders[1];
 
 			}
 		}
 
-		try {
-			$STH = $this->conn->prepare($query);
-			$STH->execute($param);
-		} catch (PDOException $e) {
-			echo 'Error: ' . $e->getMessage();
-		}
-
-		// Returning the results
-		if (!empty($STH)) {
-			return TRUE;
-		} else {
+		$PdoResultObject = $this->prepareAndExecuteQuery($query, $param);
+		if ($PdoResultObject == FALSE) {
 			return FALSE;
+		} else {
+			return TRUE;
 		}
 	}
 
@@ -238,12 +231,10 @@ class Model
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
-			foreach ($keys as $value) {
-				$pdo_placeholders[] = ':' . $value;
-			}
+			$PdoPlaceholders = $this->createPdoPlaceholders($param);
 
 			if (!empty($param)) { // If a search query is given
-				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " LIKE " . $pdo_placeholders[0];
+				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " LIKE " . $PdoPlaceholders[0];
 			}
 
 			if ($table == 'reviews') {
@@ -251,16 +242,11 @@ class Model
 			}
 
 
-			try {
-				$STH = $this->conn->prepare($query);
-				$STH->execute($param);
-			} catch (PDOException $e) {
-				echo 'Error: ' . $e->getMessage();
-			}
-
-			// Returning the results
-			$data = $STH->fetchAll();
-			if (!empty($data) && is_array($data)) {
+			$PdoResultObject = $this->prepareAndExecuteQuery($query, $param);
+			if ($PdoResultObject == FALSE) {
+				return FALSE;
+			} else {
+				$data = $PdoResultObject->fetchAll();
 				return $data;
 			}
 		}
@@ -275,14 +261,12 @@ class Model
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
-			foreach ($keys as $value) {
-				$pdo_placeholders[] = ':' . $value;
-			}
+			$PdoPlaceholders = $this->createPdoPlaceholders($param);
 
 			if (count($param) == 1) { // If we got 1 WHERE statement
-				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $pdo_placeholders[0];
+				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $PdoPlaceholders[0];
 			} elseif (count($param) == 2) { // If we got 2 WHERE statements
-				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $pdo_placeholders[0] . " AND " . $keys[1] . " = " . $pdo_placeholders[1];
+				$query = "SELECT * FROM " . $table . " WHERE " . $keys[0] . " = " . $PdoPlaceholders[0] . " AND " . $keys[1] . " = " . $PdoPlaceholders[1];
 			}
 			// To be expanded with 3 and 4 WHERE/AND statements. There will be enough
 			// Also, consided array_key_exists('order_by'), to change the order of results
@@ -312,20 +296,12 @@ class Model
 			}
 		}
 
-		try {
-			$STH = $this->conn->prepare($query);
-			$STH->execute($param);
-		} catch (PDOException $e) {
-			echo 'Error: ' . $e->getMessage();
-		}
-
-		// Returning the results
-		$data = $STH->fetchAll();
-
-		if (!empty($data) && is_array($data)) {
-			return $data;
-		} else {
+		$PdoResultObject = $this->prepareAndExecuteQuery($query, $param);
+		if ($PdoResultObject == FALSE) {
 			return FALSE;
+		} else {
+			$data = $PdoResultObject->fetchAll();
+			return $data;
 		}
 	}
 

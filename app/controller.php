@@ -100,7 +100,6 @@ class Controller
 					}
 				} else {
 					$data = array_map("htmlspecialchars", $data); // XSS escaping
-					extract($data);
 					$this->requireView($view, $data, $template);
 				}
 			} else if (is_int($data) || is_string($data) || is_null($data)) {
@@ -110,20 +109,20 @@ class Controller
 		}
 	}
 
-	private function requireView($name, $data = [], $template = FALSE)
+	private function requireView($view, $data = NULL, $template = FALSE)
 	{
 		if (is_array($data)) {
 			extract($data);
 		}
 		if ($template == FALSE) {
-			require("views/base/" . $name);
+			require("views/base/" . $view);
 		} elseif ($template == TRUE) {
-			require("views/templates/" . $name);
+			require("views/templates/" . $view);
 		}
 	}
 
 
-	// Method for hashing our passwords safely
+	// Method for hashing passwords safely, using blowfish algorithm
 	private function blowfishCrypt($password, $cost)
 	{
 		$chars = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
