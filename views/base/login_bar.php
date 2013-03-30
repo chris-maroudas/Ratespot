@@ -8,23 +8,23 @@
 	<meta charset="utf-8"/>
 	<!-- Set the viewport width to device width for mobile -->
 	<meta name="viewport" content="width=device-width"/>
-	<title>Technology reviews | Ratespot</title>
+	<title><?php echo $this->title ?> | RateSpot.gr | The absolute review community</title>
 	<!-- Included CSS Files (Uncompressed) -->
 	<!--
 	  <link rel="stylesheet" href="stylesheets/foundation.css">
 	  -->
 	<!-- Included CSS Files (Compressed) -->
-	<link rel="stylesheet" href="../../../stylesheets/foundation.min.css">
+	<link rel="stylesheet" href="../../../../stylesheets/foundation.min.css">
 
 
 
-	<link rel="stylesheet" href="../../../stylesheets/screen.css">
+	<link rel="stylesheet" href="../../../../stylesheets/screen.css">
 
 	<!-- Typekit fonts !-->
 	<script type="text/javascript" src="//use.typekit.net/ixd7wzq.js"></script>
 	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
-	<script src="../../javascripts/modernizr.foundation.js"></script>
+	<script src="../../../../javascripts/modernizr.foundation.js"></script>
 
 
 </head>

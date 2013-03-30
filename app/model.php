@@ -99,9 +99,11 @@ class Model
 	}
 
 	/* Database abstraction for selecting data */
-	public function select($table, $param = NULL, $limit = NULL)
+	public function select($table, $param = NULL, $start = 0, $limit = 10)
 	{
-
+		if ($start < 0) {
+			$start = 0;
+		}
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
@@ -122,7 +124,7 @@ class Model
 
 
 			if (!empty($limit) && is_int($limit)) { // If a Limit is given
-				$query .= " LIMIT " . $limit; // just add LIMIT int
+				$query .= " LIMIT " . $start . "," . $limit;
 			}
 		} elseif ($param == NULL) { // If we had no parameters given
 			if (!empty($limit) && is_int($limit)) { // If a Limit is given
@@ -130,7 +132,7 @@ class Model
 				if ($table == 'reviews' || $table = 'articles') {
 					$query .= " ORDER BY date DESC ";
 				}
-				$query .= " LIMIT " . $limit;
+				$query .= " LIMIT " . $start . "," . $limit;
 			} elseif ($limit == NULL) {
 				$query = "SELECT * FROM " . $table;
 
@@ -220,7 +222,6 @@ class Model
 				return $data[0]; // if a correct password is given return the users name
 			}
 		}
-
 		return FALSE; // If users email not found
 	}
 
@@ -250,7 +251,6 @@ class Model
 				return $data;
 			}
 		}
-
 		return FALSE;
 	}
 

@@ -9,6 +9,8 @@ error_reporting(E_ALL);
 class Controller
 {
 	public $user;
+	private $pagination;
+	private $title;
 
 	function __construct()
 	{
@@ -20,15 +22,24 @@ class Controller
 
 		$this->user = $this->session->user;
 
-		$page = $this->proccessPageString();    // Get page from URL
-		$urlParams = $this->proccessQueryString();  // Get the url parameters from URL
+		$page = $this->proccessPageString(); // Get page from URL
+		$urlParams = $this->proccessQueryString(); // Get the url parameters from URL
+		$this->title = $this->createTitle($page, $urlParams);
+
+		// If url parameters were given, search if a page is given
+
+		if ($urlParams != FALSE) {
+			$this->pagination = $this->getPageFromQueryString($urlParams);
+		} else {
+			$this->pagination = 0;
+		}
 
 		// Handle page load
 		$endpoint = $this->router->lookup($page);
-		if ($endpoint == FALSE) {
-			$this->redirectTo("/404.html");
-		} else {
+		if ($endpoint != FALSE) {
 			$this->$endpoint($urlParams); /* endpoint will be the function returned by router */
+		} else {
+			$this->redirectTo("/404.html");
 		}
 	}
 
@@ -41,6 +52,7 @@ class Controller
 		if (isset($_GET['page']) && is_string($_GET['page'])) {
 			$page = $_GET['page'];
 		}
+
 		return $page;
 	}
 
@@ -50,13 +62,32 @@ class Controller
 		if (strlen($_GET['query']) > 0) {
 			$urlParams = explode("/", $_GET['query']);
 		}
+
 		return $urlParams;
 	}
 
-
-	private function loadPage($view, $data = NULL)
+	private function getPageFromQueryString($queryString)
 	{
-		if (isset($this->user) && is_string($this->user) && !empty($this->user)) {
+		if (is_int(array_search("page", $queryString))) {
+			$position = array_search("page", $queryString);
+
+			return ($queryString[$position + 1] * 10) - 10;
+		} else {
+			return 0;
+		}
+	}
+
+	private function createTitle($page, $urlParams) {
+		$title = $page;
+		if (is_array($urlParams) && is_string($urlParams[0])) {
+			$title .= " " . $urlParams[0] . " ";
+		}
+		return ucwords($title);
+	}
+
+	private function loadPage($view, $data = NULL, $displayPagination = FALSE)
+	{
+		if (is_string($this->user) && !empty($this->user)) {
 			$this->loadView("control_bar", $this->user); // If a user is logged in,
 		} else {
 			$this->loadView("login_bar");
@@ -79,12 +110,29 @@ class Controller
 
 		$this->loadView($view, $data, $template = TRUE); /* Content */
 
+		if ($displayPagination == TRUE) {
+			$data = $this->generatePaginationUrl();
+			$this->loadView("pagination", $data);
+		}
+
 		$sidebarData = $this->getSidebarData();
 		$this->loadView("sidebar", $sidebarData); /* Sidebar */
 
 		$this->loadView("footer"); /* Footer */
 	}
 
+
+	private function generatePaginationUrl()
+	{
+		$currentURL = $_SERVER['REQUEST_URI'];
+		$currentpage = $currentURL[strlen($currentURL)-1];
+		$leftPage = $currentpage - 1;
+		$rightPage = $currentpage + 1;
+
+		$links = Array ("leftLink" => substr($currentURL, 0, -1) . $leftPage,
+						"rightLink" => substr($currentURL, 0, -1) . $rightPage);
+		return $links;
+	}
 
 	private function loadView($view, $data = NULL, $template = FALSE)
 	{
@@ -232,10 +280,10 @@ class Controller
 
 	/* PAGES functions */
 
-	private function indexPage()
+	private function indexPage($urlParams)
 	{
 		$queryParams = Array("approved" => 1);
-		$data = $this->model->select('reviews', $queryParams, 10);
+		$data = $this->model->select('reviews', $queryParams, $this->pagination);
 		$this->checkForErrors($data);
 		$this->loadPage("front_page", $data);
 	}
@@ -243,50 +291,54 @@ class Controller
 	// Called for a specific article, and a title is also given
 	private function reviewsDisplay($urlParams)
 	{
-		if ($urlParams != FALSE) {
-			if ($urlParams[0] == 'category' && !empty($urlParams[1])) /*  /reviews/category/gpu   */ {
+
+		if ($urlParams[0] == 'category') {
+			if ($urlParams[1] != "all" && !empty($urlParams[1])) {
 				$queryParams = Array("category" => $urlParams[1],
 				                     "approved" => 1);
 				$page = "reviews_categories_specific";
-
-			} else { // Specific review was requested
-				$queryParams = array('title'    => urldecode($urlParams[0]),
-				                     "approved" => 1);
-				$page = "reviews";
+				$displayPagination = TRUE;
+			} elseif ($urlParams[1] == "all") {
+				$queryParams = Array("approved" => 1);
+				$page = "reviews_categories_generic";
+				$displayPagination = TRUE;
 			}
-		} else { // user pressed on review button
-			$queryParams = Array("approved" => 1);
-			$page = "reviews_categories_generic";
+		} else {
+			$queryParams = array('title'    => urldecode($urlParams[0]),
+			                     "approved" => 1);
+			$page = "reviews";
+			$displayPagination = FALSE;
 		}
-
-		$data = $this->model->select('reviews', $queryParams);
+		// Specific articles, dont give a /page/2 url, so pagination will always default to zero
+		$data = $this->model->select('reviews', $queryParams, $this->pagination);
 		$this->checkForErrors($data);
-		$this->loadPage($page, $data);
+		$this->loadPage($page, $data, $displayPagination);
 	}
 
 
 	private function articlesDisplay($urlParams)
 	{
-		if ($urlParams != FALSE) {
-			if ($urlParams[0] == 'category' && !empty($urlParams[1])) /*  /reviews/category/gpu   */ {
-
+		if ($urlParams[0] == 'category') {
+			if ($urlParams[1] != "all" && !empty($urlParams[1])) {
 				$queryParams = Array("category" => $urlParams[1],
 				                     "approved" => 1);
 				$page = "articles_categories_specific";
-			} else { // Specific article was requested
-
-				$queryParams = Array('title'    => urldecode($urlParams[0]),
-				                     "approved" => 1);
-				$page = "articles";
+				$displayPagination = TRUE;
+			} elseif ($urlParams[1] == "all") {
+				$queryParams = Array("approved" => 1);
+				$page = "articles_categories_generic";
+				$displayPagination = TRUE;
 			}
-		} else { // user pressed on articles button
-			$queryParams = Array("approved" => 1);
-			$page = "articles_categories_generic";
+		} else {
+			$queryParams = array('title'    => urldecode($urlParams[0]),
+			                     "approved" => 1);
+			$page = "articles";
+			$displayPagination = FALSE;
 		}
-
-		$data = $this->model->select('articles', $queryParams);
+		// Specific articles, dont give a /page/2 url, so pagination will always default to zero
+		$data = $this->model->select('articles', $queryParams, $this->pagination);
 		$this->checkForErrors($data);
-		$this->loadPage($page, $data);
+		$this->loadPage($page, $data, $displayPagination);
 	}
 
 
@@ -574,7 +626,7 @@ class Controller
 		$this->loadPage("about");
 	}
 
-	private function success()
+	private function success($urlparams)
 	{
 		$this->redirectTo("/home", 3);
 		$this->errorHandler->setSuccessMsg("Thank you!");
