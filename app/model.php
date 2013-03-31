@@ -74,7 +74,6 @@ class Model
 
 
 
-
 	/* Database abstraction for inserting data into our database */
 	// Using prepared statements, so no need for mysql escaping
 
@@ -101,9 +100,13 @@ class Model
 	/* Database abstraction for selecting data */
 	public function select($table, $param = NULL, $start = 0, $limit = 10)
 	{
-		if ($start < 0) {
+		if ($start <= 0) {
 			$start = 0;
+		} else {
+			$start = ($start * 10) - 10;
 		}
+
+
 		if (isset($param) && is_array($param)) { // If we have a WHERE statement, for example in categories or specific reviews
 
 			$keys = array_keys($param);
@@ -121,8 +124,6 @@ class Model
 
 				$query .= " ORDER BY date DESC";
 			}
-
-
 			if (!empty($limit) && is_int($limit)) { // If a Limit is given
 				$query .= " LIMIT " . $start . "," . $limit;
 			}

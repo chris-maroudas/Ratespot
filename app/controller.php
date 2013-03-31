@@ -24,6 +24,7 @@ class Controller
 
 		$page = $this->proccessPageString(); // Get page from URL
 		$urlParams = $this->proccessQueryString(); // Get the url parameters from URL
+
 		$this->title = $this->createTitle($page, $urlParams);
 
 		// If url parameters were given, search if a page is given
@@ -52,7 +53,6 @@ class Controller
 		if (isset($_GET['page']) && is_string($_GET['page'])) {
 			$page = $_GET['page'];
 		}
-
 		return $page;
 	}
 
@@ -62,7 +62,6 @@ class Controller
 		if (strlen($_GET['query']) > 0) {
 			$urlParams = explode("/", $_GET['query']);
 		}
-
 		return $urlParams;
 	}
 
@@ -71,7 +70,7 @@ class Controller
 		if (is_int(array_search("page", $queryString))) {
 			$position = array_search("page", $queryString);
 
-			return ($queryString[$position + 1] * 10) - 10;
+			return ($queryString[$position + 1]);
 		} else {
 			return 0;
 		}
@@ -111,7 +110,7 @@ class Controller
 		$this->loadView($view, $data, $template = TRUE); /* Content */
 
 		if ($displayPagination == TRUE) {
-			$data = $this->generatePaginationUrl();
+			$data = $this->generatePaginationUrl($this->pagination);
 			$this->loadView("pagination", $data);
 		}
 
@@ -121,18 +120,6 @@ class Controller
 		$this->loadView("footer"); /* Footer */
 	}
 
-
-	private function generatePaginationUrl()
-	{
-		$currentURL = $_SERVER['REQUEST_URI'];
-		$currentpage = $currentURL[strlen($currentURL)-1];
-		$leftPage = $currentpage - 1;
-		$rightPage = $currentpage + 1;
-
-		$links = Array ("leftLink" => substr($currentURL, 0, -1) . $leftPage,
-						"rightLink" => substr($currentURL, 0, -1) . $rightPage);
-		return $links;
-	}
 
 	private function loadView($view, $data = NULL, $template = FALSE)
 	{
@@ -169,6 +156,16 @@ class Controller
 		}
 	}
 
+
+	private function generatePaginationUrl($page)
+	{
+		$leftPage = $page - 1;
+		$rightPage = $page + 1;
+		$currentURL = $_SERVER['REQUEST_URI'];
+		$links = Array ("leftLink" => substr($currentURL, 0, -1) . $leftPage,
+		                "rightLink" => substr($currentURL, 0, -1) . $rightPage);
+		return $links;
+	}
 
 	// Method for hashing passwords safely, using blowfish algorithm
 	private function blowfishCrypt($password, $cost)
@@ -208,13 +205,11 @@ class Controller
 		$data = $this->model->select("articles", $queryParam);
 
 		for ($i = 0; $i < 3; $i++) {
-
 			extract($data[$i]);
 			$sliderData['title' . $i] = $title;
 			$sliderData['content' . $i] = substr($content, 0, 220) . "..";
 			$sliderData['imageName' . $i] = $imageName;
 			$sliderData['id' . $i] = $id;
-
 		}
 
 		if (is_array($sliderData)) {
@@ -283,7 +278,7 @@ class Controller
 	private function indexPage($urlParams)
 	{
 		$queryParams = Array("approved" => 1);
-		$data = $this->model->select('reviews', $queryParams, $this->pagination);
+		$data = $this->model->select('reviews', $queryParams);
 		$this->checkForErrors($data);
 		$this->loadPage("front_page", $data);
 	}
