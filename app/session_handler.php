@@ -14,7 +14,6 @@ class Session
 
 		session_start();
 
-
 		if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
 			$this->user = $_SESSION['user'];
 		} else {
@@ -38,10 +37,13 @@ class Session
 		if (isset($_SESSION['created']) && !empty($_SESSION['created'])) {
 			$this->created = $_SESSION['created'];
 
-			if (time() - $_SESSION['created'] > 7200) {
-				// session started more than 2 hours ago
-				session_destroy();
+			if (isset($_SESSION['lastAction']) && !empty($_SESSION['lastAction'])) {
+				if (time() - $_SESSION['lastAction'] > 3600) {  // If the last action occured more than 1 hour ago
+					$this->destruct();
+				}
 			}
+
+			$_SESSION['lastAction'] = time();
 		}
 
 		if (isset($_SESSION['admin'])) {
@@ -57,6 +59,11 @@ class Session
 
 	}
 
+
+	public function regenerateId()
+	{
+		session_regenerate_id();
+	}
 
 	public function destruct()
 	{

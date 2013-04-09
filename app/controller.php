@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 class Controller
 {
 	public $user;
-	private $pagination;
+	private $page;
 	private $title;
 
 	function __construct()
@@ -22,21 +22,21 @@ class Controller
 
 		$this->user = $this->session->user;
 
-		$page = $this->proccessPageString(); // Get page from URL
+		$pageRequested = $this->proccessPageString(); // Get page from URL
 		$urlParams = $this->proccessQueryString(); // Get the url parameters from URL
 
-		$this->title = $this->createTitle($page, $urlParams);
+		$this->title = $this->createTitle($pageRequested, $urlParams);
 
 		// If url parameters were given, search if a page is given
 
 		if ($urlParams != FALSE) {
-			$this->pagination = $this->getPageFromQueryString($urlParams);
+			$this->page = $this->getPageFromQueryString($urlParams);
 		} else {
-			$this->pagination = 0;
+			$this->page = 0;
 		}
 
 		// Handle page load
-		$endpoint = $this->router->lookup($page);
+		$endpoint = $this->router->lookup($pageRequested);
 		if ($endpoint != FALSE) {
 			$this->$endpoint($urlParams); /* endpoint will be the function returned by router */
 		} else {
@@ -110,7 +110,7 @@ class Controller
 		$this->loadView($view, $data, $template = TRUE); /* Content */
 
 		if ($displayPagination == TRUE) {
-			$data = $this->generatePaginationUrl($this->pagination);
+			$data = $this->generatePaginationUrl($this->page);
 			$this->loadView("pagination", $data);
 		}
 
@@ -305,7 +305,7 @@ class Controller
 			$displayPagination = FALSE;
 		}
 		// Specific articles, dont give a /page/2 url, so pagination will always default to zero
-		$data = $this->model->select('reviews', $queryParams, $this->pagination);
+		$data = $this->model->select('reviews', $queryParams, $this->page);
 		$this->checkForErrors($data);
 		$this->loadPage($page, $data, $displayPagination);
 	}
@@ -331,7 +331,7 @@ class Controller
 			$displayPagination = FALSE;
 		}
 		// Specific articles, dont give a /page/2 url, so pagination will always default to zero
-		$data = $this->model->select('articles', $queryParams, $this->pagination);
+		$data = $this->model->select('articles', $queryParams, $this->page);
 		$this->checkForErrors($data);
 		$this->loadPage($page, $data, $displayPagination);
 	}
@@ -390,6 +390,7 @@ class Controller
 						$this->session->setUserId($result['id']);
 						$this->session->setAuthenticated(TRUE);
 						$this->session->setCreated(time());
+						$this->session->regenerateId(); // Regenerating session ID because of privilege elevation
 						$this->redirectTo('/home');
 					} else { // If the model didn't find a match
 						$this->errorHandler->setErrorMsg("Wrong user name or password combination");
@@ -436,6 +437,7 @@ class Controller
 				if ($this->getPostParameter('email', SREGEXPRULES) && $this->getPostParameter('password', SREGEXPRULES)) {
 					if ($this->getPostParameter('email') == ADMINEMAIL && $this->getPostParameter('password') == ADMINPASS) {
 						$this->session->setAdmin(TRUE);
+						$this->session->regenerateId(); // Regenerating session Id because of privilege elevation
 						$this->redirectTo("/admin/reviews"); // Reload the page, so we can show him the control panel
 					} else {
 						$this->errorHandler->setErrorMsg("Wrong email and password combination");
